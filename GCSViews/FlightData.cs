@@ -5147,21 +5147,64 @@ namespace MissionPlanner.GCSViews
 
         void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
         {
-            // Draw the background of the ListBox control for each item.
-            //e.DrawBackground();
-            // Define the default color of the brush as black.
-            Brush myBrush = Brushes.Black;
-
-            LinearGradientBrush linear = new LinearGradientBrush(e.Bounds, Color.FromArgb(0x94, 0xc1, 0x1f),
-                Color.FromArgb(0xcd, 0xe2, 0x96), LinearGradientMode.Vertical);
-
-            e.Graphics.FillRectangle(linear, e.Bounds);
-
-            // Draw the current item text based on the current Font
-            // and the custom brush settings.
-            e.Graphics.DrawString(((TabControl) sender).TabPages[e.Index].Text,
-                e.Font, myBrush, e.Bounds, StringFormat.GenericDefault);
-            // If the ListBox has focus, draw a focus rectangle around the selected item.
+            // Professional DIMP Aviation Theme - Dark tabs
+            TabControl tabControl = (TabControl)sender;
+            TabPage tabPage = tabControl.TabPages[e.Index];
+            
+            // Determine if this is the selected tab
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+            
+            // Colors for DIMP theme
+            Color bgColor = Color.FromArgb(0x1A, 0x1A, 0x2E);      // Dark navy background
+            Color selectedBg = Color.FromArgb(0x00, 0x7A, 0xCC);  // Blue selected tab
+            Color borderColor = Color.FromArgb(0x3A, 0x3A, 0x56);  // Subtle border
+            Color textColor = Color.FromArgb(0xE0, 0xE0, 0xE8);    // Brighter text for readability
+            Color selectedText = Color.White;                       // White text on selected
+            
+            // Draw tab background
+            using (SolidBrush bgBrush = new SolidBrush(isSelected ? selectedBg : bgColor))
+            {
+                e.Graphics.FillRectangle(bgBrush, e.Bounds);
+            }
+            
+            // Draw top accent line for selected tab
+            if (isSelected)
+            {
+                using (Pen accentPen = new Pen(Color.FromArgb(0x00, 0xB4, 0xF8), 3))
+                {
+                    e.Graphics.DrawLine(accentPen, e.Bounds.Left, 0, e.Bounds.Right, 0);
+                }
+            }
+            
+            // Draw border
+            using (Pen borderPen = new Pen(borderColor, 1))
+            {
+                e.Graphics.DrawRectangle(borderPen, e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1);
+            }
+            
+            // Draw tab text
+            using (Font tabFont = new Font("Segoe UI", 10F, isSelected ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel))
+            {
+                using (Brush textBrush = new SolidBrush(isSelected ? selectedText : textColor))
+                {
+                    StringFormat sf = new StringFormat();
+                    sf.Alignment = StringAlignment.Center;
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.FormatFlags = StringFormatFlags.NoWrap; // Prevent word wrapping
+                    
+                    // Add padding to text bounds
+                    RectangleF textRect = new RectangleF(
+                        e.Bounds.X + 4, 
+                        e.Bounds.Y + 2, 
+                        e.Bounds.Width - 8, 
+                        e.Bounds.Height - 4);
+                    
+                    e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+                    e.Graphics.DrawString(tabPage.Text, tabFont, textBrush, textRect, sf);
+                }
+            }
+            
+            // Draw focus rectangle for accessibility
             e.DrawFocusRectangle();
         }
 

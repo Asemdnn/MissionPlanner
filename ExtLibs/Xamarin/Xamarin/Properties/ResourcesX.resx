@@ -736,9 +736,6 @@
   <data name="_09028_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\09028-01.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="_0d92fed790a3a70170e61a86db103f399a595c70" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\0d92fed790a3a70170e61a86db103f399a595c70.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="hud" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hud.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>

@@ -54,12 +54,9 @@ namespace MissionPlanner
         private static readonly ILog log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        // Counter for unlocking hidden menus (Setup, Config, Simulation, Help)
-        private static int _dataClickCount = 0;
-        private static DateTime _lastDataClick = DateTime.MinValue;
-        private const int CLICK_THRESHOLD = 5;
-        private const string UNLOCK_PASSWORD = "665665";
-        private static bool _hiddenMenusUnlocked = false;
+        // Advanced menu lock state
+        private static bool _advancedMenusLocked = true;
+        private const string ADVANCED_UNLOCK_PASSWORD = "123456";
 
         public static menuicons displayicons; //do not initialize to allow update of custom icons
         public static string running_directory = Settings.GetRunningDirectory();
@@ -603,12 +600,12 @@ namespace MissionPlanner
 
         public void updateLayout(object sender, EventArgs e)
         {
-            // Only show Setup, Config, Simulation, Help menus when unlocked via 5 clicks on Flight Data
-            var showHiddenMenus = _hiddenMenusUnlocked;
-            MenuInitConfig.Visible = showHiddenMenus;
-            MenuConfigTune.Visible = showHiddenMenus;
-            MenuSimulation.Visible = showHiddenMenus;
-            MenuHelp.Visible = showHiddenMenus;
+            // Setup and Config require unlock - Simulation and Help are always visible
+            bool menusUnlocked = !_advancedMenusLocked;
+            MenuInitConfig.Visible = menusUnlocked;
+            MenuConfigTune.Visible = menusUnlocked;
+            MenuSimulation.Visible = true;
+            MenuHelp.Visible = true;
             MissionPlanner.Controls.BackstageView.BackstageView.Advanced = DisplayConfiguration.isAdvancedMode;
 
             // force autohide on
@@ -643,6 +640,8 @@ namespace MissionPlanner
 
         public MainV2()
         {
+            try
+            {
             log.Info("Mainv2 ctor");
 
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -711,6 +710,12 @@ namespace MissionPlanner
             }
 
             InitializeComponent();
+
+            // Set Tablet Mirror button text
+            MenuTabletMirror.Text = "Tablet Mirror";
+
+            // Ensure Setup and Config are hidden on startup (they require unlock)
+            updateLayout(null, null);
 
             //Init Theme table and load Windows11 as a default
             ThemeManager.thmColor = new ThemeColorTable(); //Init colortable
@@ -1096,12 +1101,26 @@ namespace MissionPlanner
                 this.Icon = Icon.FromHandle(((Bitmap) Program.IconFile).GetHicon());
             }
 
-            MenuArduPilot.Image = new Bitmap(Properties.Resources._0d92fed790a3a70170e61a86db103f399a595c70,
-                (int) (200), 31);
-            MenuArduPilot.Width = MenuArduPilot.Image.Width;
-
-            if (Program.Logo2 != null)
-                MenuArduPilot.Image = Program.Logo2;
+            // Draw red "JIAC&DI" text on MenuArduPilot button
+            Bitmap bmp = new Bitmap(120, 30);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.Clear(System.Drawing.Color.Transparent);
+                using (Font font = new Font("Segoe UI", 14, System.Drawing.FontStyle.Bold))
+                {
+                    using (Brush brush = new SolidBrush(System.Drawing.Color.Red))
+                    {
+                        StringFormat sf = new StringFormat();
+                        sf.Alignment = StringAlignment.Center;
+                        sf.LineAlignment = StringAlignment.Center;
+                        g.DrawString("JIAC&DI", font, brush, new RectangleF(0, 0, 120, 30), sf);
+                    }
+                }
+            }
+            MenuArduPilot.Image = bmp;
+            MenuArduPilot.Width = 120;
+            MenuArduPilot.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 
             Application.DoEvents();
 
@@ -1111,6 +1130,13 @@ namespace MissionPlanner
 
             // save config to test we have write access
             SaveConfig();
+            }
+        catch (Exception ex)
+        {
+            log.Fatal("Fatal crash in MainV2 constructor", ex);
+            Console.WriteLine("CRASH in MainV2: " + ex.ToString());
+            throw;
+        }
         }
 
         void cmb_sysid_Click(object sender, EventArgs e)
@@ -1314,34 +1340,27 @@ namespace MissionPlanner
 
         private void MenuFlightData_Click(object sender, EventArgs e)
         {
-            // Handle click counter for unlocking hidden menus
-            var now = DateTime.Now;
-            if ((now - _lastDataClick).TotalSeconds < 1000)
-            {
-                // Clicks must be within 1 second window to count
-                _dataClickCount++;
-            }
-            else
-            {
-                _dataClickCount = 1;
-            }
-            _lastDataClick = now;
+            MyView.ShowScreen("FlightData");
 
-            // Check if threshold reached - prompt for password
-            if (_dataClickCount >= CLICK_THRESHOLD)
+            // save config
+            SaveConfig();
+        }
+
+        private void menu_AdvanceLock_Click(object sender, EventArgs e)
+        {
+            if (_advancedMenusLocked)
             {
-                _dataClickCount = 0;
-                // Ask for password to unlock
-                var pw = "";
-                if (InputBox.Show("Enter Password", "Enter password to unlock advanced menus:", ref pw, true) ==
+                // Show unlock dialog
+                string pw = "";
+                if (InputBox.Show("Enter Password", "Enter password to unlock Setup and Config menus:", ref pw, true) ==
                     System.Windows.Forms.DialogResult.OK)
                 {
-                    if (pw == UNLOCK_PASSWORD)
+                    if (pw == ADVANCED_UNLOCK_PASSWORD)
                     {
-                        _hiddenMenusUnlocked = true;
-                        // Refresh menu visibility
-                        instance.updateLayout(null, null);
-                        CustomMessageBox.Show("Advanced menus unlocked!", "Success");
+                        _advancedMenusLocked = false;
+                        menu_AdvanceLock.Image = MissionPlanner.Properties.Resources.unlock_icon;
+                        updateLayout(null, null);
+                        CustomMessageBox.Show("Setup and Config menus unlocked!", "Success");
                     }
                     else
                     {
@@ -1349,11 +1368,14 @@ namespace MissionPlanner
                     }
                 }
             }
-
-            MyView.ShowScreen("FlightData");
-
-            // save config
-            SaveConfig();
+            else
+            {
+                // Lock menus
+                _advancedMenusLocked = true;
+                menu_AdvanceLock.Image = MissionPlanner.Properties.Resources.lock_icon;
+                updateLayout(null, null);
+                CustomMessageBox.Show("Setup and Config menus locked.", "Success");
+            }
         }
 
         private void MenuFlightPlanner_Click(object sender, EventArgs e)
@@ -1394,6 +1416,22 @@ namespace MissionPlanner
         private void MenuSimulation_Click(object sender, EventArgs e)
         {
             MyView.ShowScreen("Simulation");
+        }
+
+        private void MenuMap_Click(object sender, EventArgs e)
+        {
+            MyView.ShowScreen("MapScreen");
+
+            // save config
+            SaveConfig();
+        }
+
+        private void MenuTabletMirror_Click(object sender, EventArgs e)
+        {
+            GCSViews.TabletMirrorForm.ShowTabletMirror();
+
+            // save config
+            SaveConfig();
         }
 
         private void MenuTuning_Click(object sender, EventArgs e)
@@ -3221,6 +3259,7 @@ namespace MissionPlanner
             MyView.AddScreen(new MainSwitcher.Screen("HWConfig", typeof(GCSViews.InitialSetup), false));
             MyView.AddScreen(new MainSwitcher.Screen("SWConfig", typeof(GCSViews.SoftwareConfig), false));
             MyView.AddScreen(new MainSwitcher.Screen("Simulation", Simulation, true));
+            MyView.AddScreen(new MainSwitcher.Screen("MapScreen", typeof(GCSViews.MapScreen), false));
             MyView.AddScreen(new MainSwitcher.Screen("Help", typeof(GCSViews.Help), false));
 
             try
@@ -4152,6 +4191,12 @@ namespace MissionPlanner
                 return true;
             }
 
+            if (keyData == (Keys.Control | Keys.L)) // lock/unlock advanced menus
+            {
+                menu_AdvanceLock_Click(null, null);
+                return true;
+            }
+
             /*if (keyData == (Keys.Control | Keys.S)) // screenshot
             {
                 ScreenShot();
@@ -4721,11 +4766,11 @@ namespace MissionPlanner
         {
             try
             {
-                System.Diagnostics.Process.Start("https://ardupilot.org/?utm_source=Menu&utm_campaign=MP");
+                System.Diagnostics.Process.Start("https://jiacdi.com.jo/");
             }
             catch
             {
-                CustomMessageBox.Show("Failed to open url https://ardupilot.org");
+                CustomMessageBox.Show("Failed to open url https://jiacdi.com.jo/");
             }
         }
 

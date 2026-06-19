@@ -110,15 +110,6 @@ namespace MissionPlanner.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] _0d92fed790a3a70170e61a86db103f399a595c70 {
-            get {
-                object obj = ResourceManager.GetObject("_0d92fed790a3a70170e61a86db103f399a595c70", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].

@@ -202,7 +202,7 @@ namespace MissionPlanner
                 return;
             }
 
-            name = "Mission Planner";
+            name = "DIMP";
 
             try
             {
@@ -235,6 +235,8 @@ namespace MissionPlanner
 
             if (File.Exists(Settings.GetRunningDirectory() + "splashbg.png")) // 600*375
                 SplashBG = new Bitmap(Settings.GetRunningDirectory() + "splashbg.png");
+            else
+                SplashBG = new Bitmap(MissionPlanner.Properties.Resources.jiacdi_splashbg);
 
             try
             {
@@ -266,11 +268,8 @@ namespace MissionPlanner
             }
 
             Splash = new MissionPlanner.Splash();
-            if (SplashBG != null)
-            {
-                Splash.BackgroundImage = SplashBG;
-                Splash.pictureBox1.Visible = false;
-            }
+            // Background image is already set in Splash.Designer.cs
+            // Don't override pictureBox1 visibility as it shows the Jordan flag
 
             Console.WriteLine("IconFile");
             if (IconFile != null)
@@ -475,15 +474,41 @@ namespace MissionPlanner
             {
                 Thread.CurrentThread.Name = "Base Thread";
                 Console.WriteLine("Application.Run(new MainV2())");
+                
+                // Add detailed logging for crash diagnosis
+                string logFile = Path.Combine(Settings.GetDataDirectory(), "startup_crash_log.txt");
+                try
+                {
+                    File.AppendAllText(logFile, "\n[" + DateTime.Now + "] Starting MainV2 constructor\n");
+                }
+                catch { }
+
                 Application.Run(new MainV2());
             }
             catch (Exception ex)
             {
                 log.Fatal("Fatal app exception", ex);
                 Console.WriteLine(ex.ToString());
-
-                Console.WriteLine("\nPress any key to exit!");
-                Console.ReadLine();
+                Console.WriteLine("Application encountered a fatal error. Please check the log file for details.");
+                
+                // Add crash logging
+                try
+                {
+                    string logFile = Path.Combine(Settings.GetDataDirectory(), "startup_crash_log.txt");
+                    string crashLog = "\n[" + DateTime.Now + "] CRASH in Application.Run:\n" +
+                        "Exception: " + ex.GetType().Name + "\n" +
+                        "Message: " + ex.Message + "\n" +
+                        "StackTrace: " + ex.StackTrace + "\n";
+                    if (ex.InnerException != null)
+                    {
+                        crashLog += "Inner Exception: " + ex.InnerException.GetType().Name + "\n" +
+                            "Inner Message: " + ex.InnerException.Message + "\n" +
+                            "Inner StackTrace: " + ex.InnerException.StackTrace + "\n";
+                    }
+                    File.AppendAllText(logFile, crashLog);
+                    Console.WriteLine("Crash log written to: " + logFile);
+                }
+                catch { }
             }
 
             try

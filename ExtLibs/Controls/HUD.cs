@@ -998,16 +998,16 @@ namespace MissionPlanner.Controls
             set { _groundColor2 = value; }
         }
 
-        private Color _skyColor1 = Color.Blue;
-        private Color _skyColor2 = Color.LightBlue;
-        private Color _groundColor1 = Color.FromArgb(0x9b, 0xb8, 0x24);
-        private Color _groundColor2 = Color.FromArgb(0x41, 0x4f, 0x07);
+        private Color _skyColor1 = Color.FromArgb(0x00, 0x2B, 0x5E);    // Professional dark blue sky
+        private Color _skyColor2 = Color.FromArgb(0x00, 0x4A, 0x8C);    // Lighter blue sky
+        private Color _groundColor1 = Color.FromArgb(0x5D, 0x4E, 0x37);  // Professional brown ground
+        private Color _groundColor2 = Color.FromArgb(0x3D, 0x32, 0x25);  // Darker brown ground
 
-        private Color _hudcolor = Color.White;
-        private Pen _whitePen = new Pen(Color.White, 2);
-        private readonly SolidBrush _whiteBrush = new SolidBrush(Color.White);
-        private readonly SolidBrush _redBrush = new SolidBrush(Color.Red);
-        private readonly SolidBrush _orangeBrush = new SolidBrush(Color.Orange);
+        private Color _hudcolor = Color.FromArgb(0x00, 0xB4, 0xF8);     // Cyan HUD color for better visibility
+        private Pen _whitePen = new Pen(Color.FromArgb(0x00, 0xB4, 0xF8), 2); // Cyan pen
+        private readonly SolidBrush _whiteBrush = new SolidBrush(Color.FromArgb(0x00, 0xB4, 0xF8)); // Cyan brush
+        private readonly SolidBrush _redBrush = new SolidBrush(Color.FromArgb(0xFF, 0x44, 0x44)); // Brighter red
+        private readonly SolidBrush _orangeBrush = new SolidBrush(Color.FromArgb(0xFF, 0xAA, 0x44)); // Amber orange
 
         private static readonly SolidBrush SolidBrush = new SolidBrush(Color.FromArgb(0x55, 0xff, 0xff, 0xff));
 

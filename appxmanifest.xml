@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10">
-  <Identity Name="36541MichaelOborne.MissionPlanner"
-            Version="0.0.54.0"
+  <Identity Name="36541JiACDI.MissionPlanner"
+            Version="1.0.0.0"
             Publisher="CN=3B1842DF-8664-4A02-B840-61F61DA8A94E" />
   <Properties>
-    <DisplayName>Mission Planner</DisplayName>
-    <PublisherDisplayName>Michael Oborne</PublisherDisplayName>
+    <DisplayName>JIAC&DI Mission Planner</DisplayName>
+    <PublisherDisplayName>JIAC&DI Avionics Team</PublisherDisplayName>
     <Logo>mpdesktop150.png</Logo>
   </Properties>
   <Resources>
@@ -19,7 +19,7 @@
   </Capabilities>
   <Applications>
 		<Application Id="MissionPlanner" Executable="MissionPlanner.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="Mission Planner" Description="ArduPilot ground control station"
+      <uap:VisualElements DisplayName="JIAC&DI Mission Planner" Description="JIAC&DI Avionics Team Ground Control Station"
            Square150x150Logo="mpdesktop150.png" Square44x44Logo="mpdesktop44.png"  
            BackgroundColor="#FFFFFF" />
       <Extensions />

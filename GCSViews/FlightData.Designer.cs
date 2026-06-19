@@ -300,30 +300,36 @@ namespace MissionPlanner.GCSViews
             // MainH
             // 
             this.MainH.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.MainH.BackColor = System.Drawing.Color.FromArgb(0x1A, 0x1A, 0x2E);
             resources.ApplyResources(this.MainH, "MainH");
             this.MainH.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.MainH.Name = "MainH";
             // 
             // MainH.Panel1
             // 
+            this.MainH.Panel1.BackColor = System.Drawing.Color.FromArgb(0x1A, 0x1A, 0x2E);
             this.MainH.Panel1.Controls.Add(this.SubMainLeft);
             // 
             // MainH.Panel2
             // 
+            this.MainH.Panel2.BackColor = System.Drawing.Color.FromArgb(0x1A, 0x1A, 0x2E);
             this.MainH.Panel2.Controls.Add(this.tableMap);
             // 
             // SubMainLeft
             // 
             this.SubMainLeft.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SubMainLeft.BackColor = System.Drawing.Color.FromArgb(0x1A, 0x1A, 0x2E);
             resources.ApplyResources(this.SubMainLeft, "SubMainLeft");
             this.SubMainLeft.Name = "SubMainLeft";
             // 
             // SubMainLeft.Panel1
             // 
+            this.SubMainLeft.Panel1.BackColor = System.Drawing.Color.FromArgb(0x16, 0x16, 0x28);
             this.SubMainLeft.Panel1.Controls.Add(this.hud1);
             // 
             // SubMainLeft.Panel2
             // 
+            this.SubMainLeft.Panel2.BackColor = System.Drawing.Color.FromArgb(0x16, 0x16, 0x28);
             this.SubMainLeft.Panel2.ContextMenuStrip = this.contextMenuStripactionstab;
             this.SubMainLeft.Panel2.Controls.Add(this.tabControlactions);
             this.SubMainLeft.Panel2.Controls.Add(this.panel_persistent);
@@ -334,7 +340,7 @@ namespace MissionPlanner.GCSViews
             this.hud1.alt = 0F;
             this.hud1.altunit = null;
             this.hud1.AOA = 0F;
-            this.hud1.BackColor = System.Drawing.Color.Black;
+            this.hud1.BackColor = System.Drawing.Color.FromArgb(0x0A, 0x0A, 0x16); // Darker HUD background
             this.hud1.batterycellcount = 4;
             this.hud1.batterylevel = 0F;
             this.hud1.batterylevel2 = 0F;
@@ -592,6 +598,12 @@ namespace MissionPlanner.GCSViews
             // tabControlactions
             // 
             this.tabControlactions.ContextMenuStrip = this.contextMenuStripactionstab;
+            this.tabControlactions.BackColor = System.Drawing.Color.FromArgb(0x1A, 0x1A, 0x2E);
+            this.tabControlactions.ForeColor = System.Drawing.Color.FromArgb(0xDC, 0xDC, 0xE6);
+            this.tabControlactions.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControlactions.ItemSize = new System.Drawing.Size(130, 36);
+            this.tabControlactions.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControlactions.Padding = new System.Drawing.Point(8, 6);
             this.tabControlactions.Controls.Add(this.tabQuick);
             this.tabControlactions.Controls.Add(this.tabActions);
             this.tabControlactions.Controls.Add(this.tabPagemessages);
@@ -615,14 +627,17 @@ namespace MissionPlanner.GCSViews
             // tabQuick
             // 
             resources.ApplyResources(this.tabQuick, "tabQuick");
+            this.tabQuick.BackColor = System.Drawing.Color.FromArgb(0x16, 0x16, 0x28);
+            this.tabQuick.ForeColor = System.Drawing.Color.FromArgb(0xDC, 0xDC, 0xE6);
             this.tabQuick.Controls.Add(this.tableLayoutPanelQuick);
             this.tabQuick.Name = "tabQuick";
-            this.tabQuick.UseVisualStyleBackColor = true;
+            this.tabQuick.UseVisualStyleBackColor = false;
             this.tabQuick.Resize += new System.EventHandler(this.tabQuick_Resize);
             // 
             // tableLayoutPanelQuick
             // 
             resources.ApplyResources(this.tableLayoutPanelQuick, "tableLayoutPanelQuick");
+            this.tableLayoutPanelQuick.BackColor = System.Drawing.Color.FromArgb(0x16, 0x16, 0x28);
             this.tableLayoutPanelQuick.Controls.Add(this.quickView6, 1, 2);
             this.tableLayoutPanelQuick.Controls.Add(this.quickView5, 0, 2);
             this.tableLayoutPanelQuick.Controls.Add(this.quickView4, 1, 1);

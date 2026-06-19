@@ -32,6 +32,13 @@ build_script:
 
     cd c:\mp\
 
+    rem Build EXE installer using Inno Setup
+    if exist "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
+        echo Building EXE installer...
+        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" MissionPlanner.iss
+        copy MissionPlanner-*.exe c:\mp\ /Y
+    )
+
     cd msi 
 
     rem wix.exe ..\bin\release\net461\ 
@@ -44,6 +51,7 @@ test: off
 artifacts:
 - path: MissionPlannerCov-int.zip
 - path: MissionPlannerBeta.zip
+- path: MissionPlanner-*-Setup.exe
 - path: checksums.txt
 - path: version.txt
 - path: ChangeLog.txt

@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 
 namespace MissionPlanner.Controls
@@ -74,13 +75,51 @@ namespace MissionPlanner.Controls
         {
             var e = new SkiaGraphics(e2.Surface);
             e2.Surface.Canvas.Clear();
+
+            // DIMP Professional Aviation Theme - Dashboard Card Style
+            var canvas = e2.Surface.Canvas;
+            int w = e2.Info.Width;
+            int h = e2.Info.Height;
+
+            // Card background - dark navy
+            using (var bgPaint = new SKPaint())
+            {
+                bgPaint.Color = SKColor.Parse("#1A1A2E");
+                bgPaint.Style = SKPaintStyle.Fill;
+                canvas.DrawRect(0, 0, w, h, bgPaint);
+            }
+
+            // Card border - subtle blue accent
+            using (var borderPaint = new SKPaint())
+            {
+                borderPaint.Color = SKColor.Parse("#3A3A56");
+                borderPaint.Style = SKPaintStyle.Stroke;
+                borderPaint.StrokeWidth = 1;
+                canvas.DrawRect(0.5f, 0.5f, w - 1, h - 1, borderPaint);
+            }
+
+            // Top accent line for selected/active state
+            using (var accentPaint = new SKPaint())
+            {
+                accentPaint.Color = SKColor.Parse("#007ACC");
+                accentPaint.Style = SKPaintStyle.Fill;
+                canvas.DrawRect(0, 0, w, 2, accentPaint);
+            }
+
             int y = 0;
             {
+                // Label text - muted gray
                 Size extent = e.MeasureString(desc, this.Font).ToSize();
-
                 var mid = extent.Width / 2;
-
-                e.DrawString(desc, this.Font, new SolidBrush(this.ForeColor), this.Width / 2 - mid, 5);
+                
+                using (var textPaint = new SKPaint())
+                {
+                    textPaint.Color = SKColor.Parse("#9090A0");
+                    textPaint.TextSize = this.Font.Size * 0.9f;
+                    textPaint.IsAntialias = true;
+                    e.DrawString(desc, new Font(this.Font.FontFamily, this.Font.Size * 0.9f, this.Font.Style), 
+                        new SolidBrush(Color.FromArgb(0x90, 0x90, 0xA0)), this.Width / 2 - mid, 8);
+                }
 
                 y = extent.Height;
             }
@@ -94,16 +133,25 @@ namespace MissionPlanner.Controls
                 float wRatio = this.Width / (float)extent.Width;
                 float ratio = (hRatio < wRatio) ? hRatio : wRatio;
 
-                newSize = (newSize * ratio);// * 0.75f; // pixel to points
-
-                newSize -= newSize % 5;
+                newSize = (newSize * ratio);
 
                 if (newSize < 8 || newSize > 999999)
                     newSize = 8;
 
                 extent = e.MeasureString(numb, new Font(this.Font.FontFamily, (float)newSize, this.Font.Style)).ToSize();
 
-                e.DrawString(numb, new Font(this.Font.FontFamily, (float)newSize, this.Font.Style), new SolidBrush(this.numberColor), this.Width / 2 - extent.Width / 2, y + ((this.Height - y) / 2 - extent.Height / 2));
+                // Use the numberColor for the value
+                using (var numPaint = new SKPaint())
+                {
+                    numPaint.Color = new SKColor(numberColor.R, numberColor.G, numberColor.B, numberColor.A);
+                    numPaint.TextSize = newSize;
+                    numPaint.IsAntialias = true;
+                    numPaint.Typeface = SKTypeface.FromFamilyName(this.Font.FontFamily.Name, SKTypefaceStyle.Bold);
+                    
+                    float x = (w - extent.Width) / 2;
+                    float yPos = y + ((h - y) / 2 + extent.Height / 2);
+                    canvas.DrawText(numb, x, yPos, numPaint);
+                }
             }
         }
 

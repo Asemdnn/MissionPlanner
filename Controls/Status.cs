@@ -59,7 +59,22 @@ namespace MissionPlanner.Controls
 
             try
             {
-                e.Graphics.FillRectangle(Brushes.Green, 0, 0, (float) (Width * (_percent / 100.0)), Height);
+                // DIMP Professional Aviation Theme - Blue progress bar
+                using (Brush bgBrush = new SolidBrush(Color.FromArgb(0x2A, 0x2A, 0x40)))
+                {
+                    e.Graphics.FillRectangle(bgBrush, 0, 0, Width, Height);
+                }
+                
+                using (Brush progressBrush = new SolidBrush(Color.FromArgb(0x00, 0x7A, 0xCC)))
+                {
+                    e.Graphics.FillRectangle(progressBrush, 0, 0, (float)(Width * (_percent / 100.0)), Height);
+                }
+                
+                // Subtle border
+                using (Pen borderPen = new Pen(Color.FromArgb(0x3A, 0x3A, 0x56), 1))
+                {
+                    e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1, Height - 1);
+                }
             }
             catch (OverflowException)
             {
@@ -69,7 +84,11 @@ namespace MissionPlanner.Controls
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            
+            // DIMP Theme - Dark background
+            using (Brush bgBrush = new SolidBrush(Color.FromArgb(0x20, 0x20, 0x36)))
+            {
+                e.Graphics.FillRectangle(bgBrush, e.ClipRectangle);
+            }
         }
     }
 }

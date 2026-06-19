@@ -18,6 +18,10 @@ cd ..
 cd ..
 cd ..
 
+REM Create EXE installer using Inno Setup
+echo Building EXE installer...
+call build-installer.bat
+
 "C:\Program Files (x86)\Windows Kits\10\Tools\bin\i386\makeappx" pack /d bin\release\net461 /p MissionPlanner.appx
 
 "C:\Program Files (x86)\Windows Kits\10\Tools\bin\i386\signtool" sign /a /v /fd SHA256 /t http://timestamp.verisign.com/scripts/timestamp.dll /n "michael oborne" MissionPlanner.appx

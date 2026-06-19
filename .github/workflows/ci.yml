@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci-check:
-    name: CI Check
+  build-release:
+    name: Build Release
     runs-on: windows-latest
 
     steps:
@@ -19,8 +19,62 @@ jobs:
       - name: Build
         shell: pwsh
         run: |
+          Write-Host "=== Environment Check ==="
+          Write-Host "DOTNET_VERSION: $env:DOTNET_VERSION"
           $msbuildPath = Split-Path (& "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\Current\Bin\amd64\MSBuild.exe | Select-Object -First 1) -Parent
+          Write-Host "MSBuild Path: $msbuildPath"
           $env:PATH = $msbuildPath + ';' + $env:PATH
           nuget locals all -clear
-          msbuild -v:m -restore -t:Build -p:Configuration=Debug MissionPlanner.sln
-          msbuild -v:m -restore -t:Build -p:Configuration=Release MissionPlanner.sln
+          Write-Host "=== Starting Build ==="
+          msbuild -v:m -restore -t:Build -p:Configuration=Release MissionPlanner.sln 2>&1 | tee build.log
+          Write-Host "=== Build Exit Code ==="
+          $LASTEXITCODE
+
+      - name: Upload Build Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DIMP-Release
+          path: bin/Release/net461
+
+  build-debug:
+    name: Build Debug
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 10
+
+      - name: Cache multiple paths
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/obj/**
+          key: ${{ runner.os }}-buildDebug
+
+      - name: Build
+        shell: pwsh
+        run: |
+          Write-Host "=== Environment Check ==="
+          $msbuildPath = Split-Path (& "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\Current\Bin\amd64\MSBuild.exe | Select-Object -First 1) -Parent
+          Write-Host "MSBuild Path: $msbuildPath"
+          $env:PATH = $msbuildPath + ';' + $env:PATH
+          nuget locals all -clear
+          Write-Host "=== Starting Debug Build ==="
+          msbuild -v:m -restore -t:Build -p:Configuration=Debug MissionPlanner.sln 2>&1 | tee build_debug.log
+          Write-Host "=== Build Exit Code ==="
+          $LASTEXITCODE
+
+      - name: Upload Debug Build Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-debug-log
+          path: build_debug.log

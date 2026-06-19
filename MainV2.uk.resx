@@ -160,7 +160,7 @@
     <value>НАЛАШТУВАННЯ</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Mission Planner - автор Майкл Оборн</value>
+    <value>DIMP - JIAC&amp;DI Ground Control Station</value>
   </data>
   <data name="MenuHelp.Text" xml:space="preserve">
     <value>ДОВІДКА</value>
@@ -181,7 +181,7 @@
     <value>Список під'єднань</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Mission Planner - автор Майкл Оборн</value>
+    <value>DIMP - JIAC&amp;DI Ground Control Station</value>
   </data>
   <data name="MenuInitConfig.ToolTipText" xml:space="preserve">
     <value>НАЛАШТУВАННЯ</value>

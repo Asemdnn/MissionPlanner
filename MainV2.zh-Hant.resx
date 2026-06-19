@@ -130,7 +130,7 @@
     <value>硬體配置</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Mission Planner - By Michael Oborne</value>
+    <value>DIMP - JIAC&amp;DI Ground Control Station</value>
   </data>
   <data name="MenuTerminal.Text" xml:space="preserve">
     <value>終端模式</value>
